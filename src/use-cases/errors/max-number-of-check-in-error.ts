@@ -1,4 +1,4 @@
-export class multipleCheckInSameDayError extends Error {
+export class MaxNumberOfCheckInsError extends Error {
   constructor() {
     super("Multiple check-in on the same day.");
   }

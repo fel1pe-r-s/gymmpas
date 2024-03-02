@@ -1,29 +1,30 @@
 import { expect, describe, it, beforeEach, vi, afterEach } from "vitest";
 import { InMemoryCheckInsRepository } from "@/repositories/in-memory/in-memory-check-ins-repository";
 import { CheckInUseCase } from "./check-in";
-import { multipleCheckInSameDayError } from "./errors/multiple-check-in-same-day-error";
+import { MaxNumberOfCheckInsError } from "./errors/max-number-of-check-in-error";
 import { InMemoryGymsRepository } from "@/repositories/in-memory/in-memory-gyms-repository";
-import { Decimal } from "@prisma/client/runtime/library";
+import { Prisma } from "@prisma/client";
+import { MaxDistanceError } from "./errors/max-distance-error";
 
 let checkInRepository: InMemoryCheckInsRepository;
 let gymsRepository: InMemoryGymsRepository;
 let sut: CheckInUseCase;
 
 describe("Check-in use case", () => {
-  beforeEach(() => {
+  beforeEach(async () => {
     checkInRepository = new InMemoryCheckInsRepository();
     gymsRepository = new InMemoryGymsRepository();
     sut = new CheckInUseCase(checkInRepository, gymsRepository);
-    vi.useFakeTimers();
 
-    gymsRepository.items.push({
+    await gymsRepository.create({
       id: "gym-01",
       title: "Jhon",
       description: "test description",
       photo: "",
-      latitude: new Decimal(-12.2717725),
-      longitude: new Decimal(-38.9909238),
+      latitude: new Prisma.Decimal(-12.2717725),
+      longitude: new Prisma.Decimal(-38.9909238),
     });
+    vi.useFakeTimers();
   });
 
   afterEach(() => {
@@ -58,7 +59,7 @@ describe("Check-in use case", () => {
         userLatitude: -12.2717725,
         userLongitude: -38.9909238,
       })
-    ).rejects.toBeInstanceOf(multipleCheckInSameDayError);
+    ).rejects.toBeInstanceOf(MaxNumberOfCheckInsError);
   });
 
   it("Should not be able to Check in twice but in different days", async () => {
@@ -88,8 +89,8 @@ describe("Check-in use case", () => {
       title: "Jhon",
       description: "test description",
       photo: "",
-      latitude: new Decimal(-12.2633015),
-      longitude: new Decimal(-38.9819116),
+      latitude: new Prisma.Decimal(-12.2633015),
+      longitude: new Prisma.Decimal(-38.9819116),
     });
 
     await expect(() =>
@@ -99,6 +100,6 @@ describe("Check-in use case", () => {
         userLatitude: -12.2717725,
         userLongitude: -40.9909238,
       })
-    ).rejects.toBeInstanceOf(Error);
+    ).rejects.toBeInstanceOf(MaxDistanceError);
   });
 });
