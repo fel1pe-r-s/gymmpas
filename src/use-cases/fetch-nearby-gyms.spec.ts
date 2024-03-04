@@ -1,14 +1,14 @@
 import { InMemoryGymsRepository } from "@/repositories/in-memory/in-memory-gyms-repository";
 import { expect, describe, it, beforeEach } from "vitest";
-import { SearchGymsUseCase } from "./search-gyms";
+import { FetchNearbyGymsUseCase } from "./fetch-nearby-gyms";
 
 let gymRepository: InMemoryGymsRepository;
-let sut: SearchGymsUseCase;
+let sut: FetchNearbyGymsUseCase;
 
 describe("Create Gym Use Case", () => {
   beforeEach(() => {
     gymRepository = new InMemoryGymsRepository();
-    sut = new SearchGymsUseCase(gymRepository);
+    sut = new FetchNearbyGymsUseCase(gymRepository);
   });
   it("should be able to search gyms", async () => {
     await gymRepository.create({
@@ -16,7 +16,7 @@ describe("Create Gym Use Case", () => {
       description: null,
       photo: null,
       latitude: -12.2717725,
-      longitude: -38.9909238,
+      longitude: -40.9909238,
     });
 
     await gymRepository.create({
@@ -28,33 +28,11 @@ describe("Create Gym Use Case", () => {
     });
 
     const { gyms } = await sut.execute({
-      query: "typically",
-      page: 1,
+      userLatitude: -12.2717725,
+      userLongitude: -38.9909238,
     });
 
     expect(gyms).toHaveLength(1);
     expect(gyms).toEqual([expect.objectContaining({ title: "Gym typically" })]);
-  });
-
-  it("'should be able to fetch paginated gyms search", async () => {
-    for (let i = 1; i <= 22; i++) {
-      await gymRepository.create({
-        title: `Gym typically ${i}`,
-        description: null,
-        photo: null,
-        latitude: -12.2717725,
-        longitude: -38.9909238,
-      });
-    }
-
-    const { gyms } = await sut.execute({
-      query: "typically",
-      page: 2,
-    });
-    expect(gyms).toHaveLength(2);
-    expect(gyms).toEqual([
-      expect.objectContaining({ title: "Gym typically 21" }),
-      expect.objectContaining({ title: "Gym typically 22" }),
-    ]);
   });
 });
