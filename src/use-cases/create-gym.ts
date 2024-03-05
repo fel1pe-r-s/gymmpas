@@ -2,10 +2,9 @@ import { GymsRepository } from "@/repositories/gyms-repository";
 import { Gym } from "@prisma/client";
 
 interface CreateGymUseCaseRequest {
-  id: string;
   title: string;
   description?: string | null;
-  photo?: string | null;
+  phone?: string | null;
   latitude: number;
   longitude: number;
 }
@@ -18,14 +17,14 @@ export class CreateGymUseCase {
   async execute({
     title,
     description,
-    photo,
+    phone,
     latitude,
     longitude,
   }: CreateGymUseCaseRequest): Promise<CreateGymUseCaseResponse> {
     const gym = await this.gymsRepository.create({
       title,
       description,
-      photo,
+      phone,
       latitude,
       longitude,
     });

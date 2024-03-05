@@ -14,7 +14,7 @@ describe("Create Gym Use Case", () => {
     await gymRepository.create({
       title: "Gym John",
       description: null,
-      photo: null,
+      phone: null,
       latitude: -12.2717725,
       longitude: -40.9909238,
     });
@@ -22,7 +22,7 @@ describe("Create Gym Use Case", () => {
     await gymRepository.create({
       title: "Gym typically",
       description: null,
-      photo: null,
+      phone: null,
       latitude: -12.2717725,
       longitude: -38.9909238,
     });

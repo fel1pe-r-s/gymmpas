@@ -13,10 +13,9 @@ describe("Create Gym Use Case", () => {
   });
   it("should be able to create gym", async () => {
     const { gym } = await sut.execute({
-      id: randomUUID(),
       title: "Gym John",
       description: null,
-      photo: null,
+      phone: null,
       latitude: -12.2717725,
       longitude: -38.9909238,
     });
