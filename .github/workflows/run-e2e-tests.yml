@@ -14,8 +14,8 @@ jobs:
           - 5432:5432
         env:
           POSTGRESQL_USERNAME: docker
-          POSTGRESQL_PASSWORD: 1234
-          POSTGRESQL_DATABASE: apisolid
+          POSTGRESQL_PASSWORD: docker
+          POSTGRESQL_DATABASE: apigym
 
     steps:
       - uses: actions/checkout@v4
@@ -30,4 +30,4 @@ jobs:
       - run: npm run test:e2e
         env:
           JWT_SECRET: testing
-          DATABASE_URL: "postgresql://docker:docker@localhost:5432/apisolid?schema=public"
+          DATABASE_URL: "postgresql://docker:docker@localhost:5432/apigym?schema=public"
